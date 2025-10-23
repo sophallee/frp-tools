@@ -1,0 +1,28 @@
+bindAddr = "127.0.0.1"
+bindPort = 7000
+
+# Configure the web server to enable the dashboard for frps.
+# dashboard is available only if webServer.port is set.
+webServer.addr = "127.0.0.1"
+webServer.port = 7500
+webServer.user = "admin"
+webServer.password = "admin"
+
+# console or real logFile path like ./frps.log
+log.to = "/var/log/frps.log"
+log.level = "info"
+log.maxDays = 3
+log.disablePrintColor = false
+detailedErrorsToClient = true
+
+# auth.method specifies what authentication method to use authenticate frpc with frps.
+auth.method = "token"
+auth.token = "12345678"
+
+# Only allow frpc to bind ports you list. By default, there won't be any limit.
+allowPorts = [
+  { start = 2000, end = 3000 },
+  { single = 3001 },
+  { single = 3003 },
+  { start = 4000, end = 50000 }
+]
