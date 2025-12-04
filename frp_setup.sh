@@ -200,14 +200,14 @@ install_frp() {
     if [ "$role" = "server" ]; then
         if rpm -q frps &>/dev/null; then
             echo "FRP server is already installed. Updating..."
-            sudo rpm -Uvh "$package_path"
+            #sudo rpm -Uvh "$package_path"
         else
             sudo rpm -ivh "$package_path"
         fi
     else
         if rpm -q frpc &>/dev/null; then
             echo "FRP client is already installed. Updating..."
-            sudo rpm -Uvh "$package_path"
+            #sudo rpm -Uvh "$package_path"
         else
             sudo rpm -ivh "$package_path"
         fi
