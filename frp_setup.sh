@@ -57,13 +57,22 @@ setup_frp_server_config() {
     
     # Check for TOML config file (new format)
     local source_toml="$config_dir/frps.toml"
+    local source_cert_script="$config_dir/generate_frp_certs.sh"
+    local source_cert_list="$config_dir/clients.list"
+    local source_cert_properties="$config_dir/cert.properties"
     local target_toml="/etc/frp/frps.toml"
+    local target_cert_script="/etc/frp/generate_frp_certs.sh"
+    local target_cert_list="/etc/frp/clients.list"
+    local target_cert_properties="/etc/frp/cert.properties"    
     
     if [ -f "$source_toml" ]; then
         echo "Using TOML configuration format (frps.toml)..."
         
         # Copy the TOML configuration file
         sudo cp "$source_toml" "$target_toml"
+        sudo cp "$source_cert_script" "$target_cert_script"
+        sudo cp "$source_cert_list" "$target_cert_list"
+        sudo cp "$source_cert_properties" "$target_cert_properties"
         
         # Generate random credentials and escape them for sed
         local web_server_pwd=$(generate_random_string 16)
