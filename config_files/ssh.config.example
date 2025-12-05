@@ -1,0 +1,5 @@
+Host dev-alma9.internal.example.com
+    HostName dev-alma9.internal.example.com
+    User user
+    Port 22
+    ProxyCommand socat - PROXY:18.6.12.5:%h:%p,proxyport=9877

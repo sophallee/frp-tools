@@ -1,13 +1,13 @@
 # Production servers
-prod-web1.example..com
-prod-web2.example..com
-prod-db1.example..com
+# prod-web1.example.com
+# prod-web2.example.com
+# prod-db1.example.com
 
 # Development servers
-dev-alma9.internal.example..com
-dev-alma10.internal.example..com
-dev-ubuntu.internal.example..com
+dev-alma9.internal.example.com
+# dev-alma10.internal.example.com
+# dev-ubuntu.internal.example.com
 
 # Remote sites
-remote-office1.example..com
-remote-office2.example..com
+# remote-office1.example.com
+# remote-office2.example.com
