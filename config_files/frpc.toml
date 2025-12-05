@@ -1,0 +1,35 @@
+# FRP Client Configuration for v0.60.0
+# Common configuration
+# Server connection settings
+serverAddr = ""
+serverPort = 3000
+
+# TLS configuration
+# transport.tls.certFile = "/etc/frp/certs/client.crt"
+# transport.tls.keyFile = "/etc/frp/certs/client.key"
+# transport.tls.trustedCaFile = "/etc/frp/certs/ca.crt"
+
+# console or real logFile path like ./frps.log
+log.to = "/var/log/frpc.log"
+log.level = "info"
+log.maxDays = 3
+log.disablePrintColor = false
+
+# auth.method specifies what authentication method to use authenticate frpc with frps.
+auth.method = "token"
+auth.token = "/4@6GzC5%E(*ju^P*drT{+@M"
+
+# [[proxies]]
+# name = "ssh"
+# type = "tcpmux"
+# multiplexer = "httpconnect"
+# customDomains = ["custom.example.com"]
+# localIP = "127.0.0.1"
+# localPort = 22
+
+# [[proxies]]
+# name = "ssh"
+# type = "tcp"
+# localIP = "127.0.0.1"
+# localPort = 22
+# remotePort = 6000

@@ -156,6 +156,78 @@ setup_frp_server_config() {
     fi
 }
 
+# Function to setup FRP client configuration
+setup_frp_client_config() {
+    echo "Setting up FRP client configuration..."
+    
+    # Create FRP configuration directory
+    sudo mkdir -p /etc/frp/certs
+    
+    # Check for TOML config file (new format)
+    local source_toml="$config_dir/frpc.toml"
+    local target_toml="/etc/frp/frpc.toml"
+    
+    if [ -f "$source_toml" ]; then
+        echo "Using TOML configuration format (frpc.toml)..."
+        
+        # Copy the TOML configuration file
+        sudo cp "$source_toml" "$target_toml"
+        
+        # Note: Client config typically doesn't need random password generation
+        # as it connects to server using server's auth token
+        # But you can add any client-specific configuration updates here if needed
+        
+        # Set appropriate permissions
+        sudo chmod 644 "$target_toml"
+        sudo chown root:root "$target_toml"
+        
+        echo "FRP client TOML configuration setup completed."
+        echo "Configuration file: $target_toml"
+        echo "Note: Update /etc/frp/frpc.toml with your server connection details and auth token"
+        
+    else
+        # Fall back to INI format if TOML doesn't exist
+        local source_ini="$config_dir/frpc.ini"
+        local target_ini="/etc/frp/frpc.ini"
+        
+        if [ ! -f "$source_ini" ]; then
+            echo "Error: No client configuration file found. Please ensure config_files directory contains frpc.toml or frpc.ini"
+            exit 1
+        fi
+        
+        echo "Using INI configuration format (frpc.ini)..."
+        
+        # Copy the INI configuration file
+        sudo cp "$source_ini" "$target_ini"
+        
+        # Set appropriate permissions
+        sudo chmod 644 "$target_ini"
+        sudo chown root:root "$target_ini"
+        
+        echo "FRP client INI configuration setup completed."
+        echo "Configuration file: $target_ini"
+        echo "Note: Update /etc/frp/frpc.ini with your server connection details and auth token"
+    fi
+    
+    # Copy service file if it exists
+    local source_service="$config_dir/frpc.service"
+    local target_service="/usr/lib/systemd/system/frpc.service"
+    
+    if [ -f "$source_service" ]; then
+        echo "Copying FRP client service file..."
+        sudo cp "$source_service" "$target_service"
+        sudo chmod 644 "$target_service"
+        sudo chown root:root "$target_service"
+        
+        # Reload systemd to recognize the new service
+        sudo systemctl daemon-reload
+        echo "FRP client service file installed: $target_service"
+    else
+        echo "Warning: FRP client service file $source_service not found."
+        echo "The RPM package should provide the service file, but customizations are missing."
+    fi
+}
+
 # Function to install FRP
 install_frp() {
     local role=$1
@@ -216,7 +288,7 @@ install_frp() {
     if [ $? -eq 0 ]; then
         echo "FRP $role v${frp_version}-${frp_release} installed successfully!"
         
-        # Setup server configuration if installing server
+        # Setup configuration based on role
         if [ "$role" = "server" ]; then
             setup_frp_server_config
             
@@ -229,10 +301,17 @@ install_frp() {
                 echo "Warning: FRP server service not found. Manual service setup may be required."
             fi
         else
-            # For client, just enable the service if it exists
+            # For client, setup configuration and service
+            setup_frp_client_config
+            
+            # Enable but don't start the service automatically (requires configuration)
             if systemctl list-unit-files | grep -q frpc.service; then
-                echo "Enabling FRP client service..."
+                echo "Enabling FRP client service (requires manual configuration)..."
                 sudo systemctl enable frpc
+                echo "Note: Update /etc/frp/frpc.toml with server details before starting the service"
+                echo "      Use: sudo systemctl start frpc after configuration"
+            else
+                echo "Warning: FRP client service not found. Manual service setup may be required."
             fi
         fi
         
@@ -254,6 +333,7 @@ install_frp() {
                 echo "FRP client service is running"
             elif systemctl is-enabled --quiet frpc 2>/dev/null; then
                 echo "FRP client service is installed but not running"
+                echo "Note: Service is enabled but requires configuration in /etc/frp/frpc.toml"
             fi
         fi
     else
@@ -279,7 +359,7 @@ show_usage() {
     echo ""
     echo "Options:"
     echo "  --install-server    Install FRP server (includes configuration setup)"
-    echo "  --install-client    Install FRP client"
+    echo "  --install-client    Install FRP client (includes configuration setup)"
     echo "  --version          Show version information"
     echo "  --help             Show this help message"
     echo ""
@@ -309,9 +389,14 @@ show_usage() {
     echo "    * frps.toml (preferred, new TOML format)"
     echo "    * frps.ini (fallback, legacy INI format)" 
     echo "    * frps.service (systemd service file)"
-    echo "  - Random web server passwords and auth tokens are generated for security"
+    echo "  - Client installation looks for these files in config_files/:"
+    echo "    * frpc.toml (preferred, new TOML format)"
+    echo "    * frpc.ini (fallback, legacy INI format)" 
+    echo "    * frpc.service (systemd service file)"
+    echo "  - Random web server passwords and auth tokens are generated for server security"
     echo "  - Double quotes are excluded from generated passwords"
     echo "  - Configuration directory: /etc/frp/"
+    echo "  - Client service is enabled but requires manual configuration before starting"
 }
 
 # Main script logic

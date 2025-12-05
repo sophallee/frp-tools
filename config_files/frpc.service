@@ -1,0 +1,35 @@
+[Unit]
+Description=FRP Client (Fast Reverse Proxy Client)
+After=network.target
+Wants=network.target
+Documentation=https://github.com/fatedier/frp
+
+[Service]
+Type=simple
+User=root
+Group=root
+Restart=on-failure
+RestartSec=5s
+LimitNOFILE=1048576
+ExecStart=/usr/local/bin/frpc -c /etc/frp/frpc.toml
+ExecReload=/usr/bin/kill -HUP $MAINPID
+# KillSignal=SIGQUIT
+# TimeoutStopSec=5
+KillMode=mixed
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=frpc
+
+# Environment variables if needed
+# Environment="FRP_LOG_LEVEL=info"
+# Environment="FRP_LOG_FILE=/var/log/frpc.log"
+
+# Security hardening (optional)
+# NoNewPrivileges=yes
+# PrivateTmp=yes
+# ProtectSystem=strict
+# ProtectHome=yes
+# ReadWritePaths=/etc/frp /var/log
+
+[Install]
+WantedBy=multi-user.target
