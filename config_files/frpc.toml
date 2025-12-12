@@ -27,9 +27,3 @@ auth.token = "/4@6GzC5%E(*ju^P*drT{+@M"
 # localIP = "127.0.0.1"
 # localPort = 22
 
-# [[proxies]]
-# name = "ssh"
-# type = "tcp"
-# localIP = "127.0.0.1"
-# localPort = 22
-# remotePort = 6000
