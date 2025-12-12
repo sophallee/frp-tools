@@ -6,8 +6,8 @@ Documentation=https://github.com/fatedier/frp
 
 [Service]
 Type=simple
-User=root
-Group=root
+User=frp
+Group=frp
 Restart=on-failure
 RestartSec=5s
 LimitNOFILE=1048576

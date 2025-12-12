@@ -10,7 +10,7 @@ serverPort = 3000
 # transport.tls.trustedCaFile = "/etc/frp/certs/ca.crt"
 
 # console or real logFile path like ./frps.log
-log.to = "/var/log/frpc.log"
+log.to = "/var/log/frp/frpc.log"
 log.level = "info"
 log.maxDays = 3
 log.disablePrintColor = false

@@ -54,6 +54,9 @@ setup_frp_server_config() {
     
     # Create FRP configuration directory
     sudo mkdir -p /etc/frp/certs
+    sudo mkdir -p /var/log/frp
+    sudo useradd --system --no-create-home --shell /sbin/nologin frp
+    sudo chown frp:frp /var/log/frp
     
     # Check for TOML config file (new format)
     local source_toml="$config_dir/frps.toml"
@@ -174,6 +177,9 @@ setup_frp_client_config() {
     
     # Create FRP configuration directory
     sudo mkdir -p /etc/frp/certs
+    sudo mkdir -p /var/log/frp
+    sudo useradd --system --no-create-home --shell /sbin/nologin frp
+    sudo chown frp:frp /var/log/frp
     
     # Check for TOML config file (new format)
     local source_toml="$config_dir/frpc.toml"
